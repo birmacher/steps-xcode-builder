@@ -356,13 +356,14 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "unittest" ]] ; then
   export BUILD_DEVICENAME="${CONFIG_unittest_simulator_name}"
   print_and_do_command bash "${THIS_SCRIPT_DIR}/xcuserver_utils/run_unit_test_with_xcuserver.sh"
 elif [[ "${XCODE_BUILDER_ACTION}" == "analyze" ]] ; then
-  print_and_do_command ${CONFIG_build_tool} \
+  set -o pipefail && ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
     clean analyze \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    | xcpretty
 elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
   print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
