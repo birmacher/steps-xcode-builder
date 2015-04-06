@@ -147,6 +147,7 @@ if [[ "${CONFIG_build_tool}" == "xcodebuild" ]]; then
 else
   XCODE_BUILDER_FORMATTER = ""
 fi
+echo_string_to_formatted_output "* Formatter: ${XCODE_BUILDER_FORMATTER}"
 
 # Required inputs testing
 if [ -z "${XCODE_BUILDER_SCHEME}" ] ; then
