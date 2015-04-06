@@ -143,9 +143,9 @@ fi
 echo_string_to_formatted_output "* Build Tool: ${CONFIG_build_tool}"
 
 if [[ "${CONFIG_build_tool}" == "xcodebuild" ]]; then
-  XCODE_BUILDER_FORMATTER = " | xcpretty -c && exit ${PIPESTATUS[0]}"
+  XCODE_BUILDER_FORMATTER=" | xcpretty -c && exit ${PIPESTATUS[0]}"
 else
-  XCODE_BUILDER_FORMATTER = ""
+  XCODE_BUILDER_FORMATTER=""
 fi
 echo_string_to_formatted_output "* Formatter: ${XCODE_BUILDER_FORMATTER}"
 
@@ -330,10 +330,10 @@ if [[ "${XCODE_BUILDER_ACTION}" == "build" ]] ; then
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
     clean build \
-    "${XCODE_BUILDER_FORMATTER}" \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    "${XCODE_BUILDER_FORMATTER}"
 elif [[ "${XCODE_BUILDER_ACTION}" == "unittest" ]] ; then
   #
   # OLD METHOD (doesn't work if it runs through SSH)
@@ -367,19 +367,20 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "analyze" ]] ; then
   print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
-    clean analyze "${XCODE_BUILDER_FORMATTER}" \
+    clean analyze \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    "${XCODE_BUILDER_FORMATTER}"
 elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
   print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
     clean archive -archivePath "${ARCHIVE_PATH}" \
-    "${XCODE_BUILDER_FORMATTER}" \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    "${XCODE_BUILDER_FORMATTER}"
 fi
 build_res_code=$?
 echo " (i) build_res_code: ${build_res_code}"
