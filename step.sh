@@ -371,8 +371,7 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "analyze" ]] ; then
     ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
-    clean analyze \
-    " ${XCODE_BUILDER_FORMATTER}"
+    clean analyze "${XCODE_BUILDER_FORMATTER}"
 elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
   print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
