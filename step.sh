@@ -142,6 +142,12 @@ if [[ "${XCODE_BUILDER_ACTION}" == "archive" || "${XCODE_BUILDER_ACTION}" == "un
 fi
 echo_string_to_formatted_output "* Build Tool: ${CONFIG_build_tool}"
 
+if [[ "${CONFIG_build_tool}" == "xcodebuild" ]]; then
+  XCODE_BUILDER_FORMATTER = " | xcpretty -c && exit ${PIPESTATUS[0]}"
+else
+  XCODE_BUILDER_FORMATTER = ""
+fi
+
 # Required inputs testing
 if [ -z "${XCODE_BUILDER_SCHEME}" ] ; then
   finalcleanup "Missing required input: No Scheme defined."
@@ -325,7 +331,8 @@ if [[ "${XCODE_BUILDER_ACTION}" == "build" ]] ; then
     clean build \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    "${XCODE_BUILDER_FORMATTER}"
 elif [[ "${XCODE_BUILDER_ACTION}" == "unittest" ]] ; then
   #
   # OLD METHOD (doesn't work if it runs through SSH)
@@ -362,7 +369,8 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "analyze" ]] ; then
     clean analyze \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    "${XCODE_BUILDER_FORMATTER}"
 elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
   print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
@@ -370,7 +378,8 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
     clean archive -archivePath "${ARCHIVE_PATH}" \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    "${XCODE_BUILDER_FORMATTER}"
 fi
 build_res_code=$?
 echo " (i) build_res_code: ${build_res_code}"
@@ -408,7 +417,8 @@ if [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
       -exportFormat ipa \
       -archivePath "${ARCHIVE_PATH}" \
       -exportPath "${EXPORT_PATH}" \
-      -exportWithOriginalSigningIdentity
+      -exportWithOriginalSigningIdentity  \
+      "${XCODE_BUILDER_FORMATTER}"
     fail_if_cmd_error "Xcode Export Archive action failed!"
     
     echo_string_to_formatted_output "* Archive build success"
