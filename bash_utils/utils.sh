@@ -11,7 +11,11 @@
 # Prints the given command, then executes it
 #  Example: print_and_do_command echo 'hi'
 #
-function print_and_do_command { echo; echo "-> $ $@"; "$@"; }
+function print_and_do_command {
+	echo # empty line
+	echo "-> $ $@"
+	"$@"
+}
 
 
 #
