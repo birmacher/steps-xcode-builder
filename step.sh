@@ -317,15 +317,18 @@ echo " (i) Available Provisioning Profiles:"
 print_and_do_command_exit_on_error ls -l "${CONFIG_provisioning_profiles_dir}"
 
 
+set -x
+
 # --- Start the build
 if [[ "${XCODE_BUILDER_ACTION}" == "build" ]] ; then
-  print_and_do_command ${CONFIG_build_tool} \
+  set -o pipefail && print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
     clean build \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    | xcpretty
 elif [[ "${XCODE_BUILDER_ACTION}" == "unittest" ]] ; then
   #
   # OLD METHOD (doesn't work if it runs through SSH)
@@ -365,7 +368,7 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "analyze" ]] ; then
     OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
     | xcpretty
 elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
-  print_and_do_command ${CONFIG_build_tool} \
+  set -o pipefail && print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
     clean archive -archivePath "${ARCHIVE_PATH}" \
@@ -374,6 +377,9 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
     OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
 fi
 build_res_code=$?
+
+set +x
+
 echo " (i) build_res_code: ${build_res_code}"
 
 if [ ${build_res_code} -eq 0 ]; then
