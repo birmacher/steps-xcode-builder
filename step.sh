@@ -374,7 +374,8 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
     clean archive -archivePath "${ARCHIVE_PATH}" \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
+    | xcpretty
 fi
 build_res_code=$?
 
