@@ -329,10 +329,10 @@ if [[ "${XCODE_BUILDER_ACTION}" == "build" ]] ; then
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
     clean build \
+    "${XCODE_BUILDER_FORMATTER}" \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
-    "${XCODE_BUILDER_FORMATTER}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
 elif [[ "${XCODE_BUILDER_ACTION}" == "unittest" ]] ; then
   #
   # OLD METHOD (doesn't work if it runs through SSH)
@@ -366,20 +366,19 @@ elif [[ "${XCODE_BUILDER_ACTION}" == "analyze" ]] ; then
   print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
-    clean analyze \
+    clean analyze "${XCODE_BUILDER_FORMATTER}" \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
-    "${XCODE_BUILDER_FORMATTER}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
 elif [[ "${XCODE_BUILDER_ACTION}" == "archive" ]] ; then
   print_and_do_command ${CONFIG_build_tool} \
     ${CONFIG_xcode_project_action} "${projectfile}" \
     -scheme "${XCODE_BUILDER_SCHEME}" \
     clean archive -archivePath "${ARCHIVE_PATH}" \
+    "${XCODE_BUILDER_FORMATTER}" \
     PROVISIONING_PROFILE="${xcode_build_param_prov_profile_UUID}" \
     CODE_SIGN_IDENTITY="${CERTIFICATE_IDENTITY}" \
-    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}" \
-    "${XCODE_BUILDER_FORMATTER}"
+    OTHER_CODE_SIGN_FLAGS="--keychain ${BITRISE_KEYCHAIN}"
 fi
 build_res_code=$?
 echo " (i) build_res_code: ${build_res_code}"
