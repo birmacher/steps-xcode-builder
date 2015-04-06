@@ -2,7 +2,7 @@
 
 function print_and_do_command {
   echo "$ $@"
-  $@
+  bash -c $@
 }
 
 #
