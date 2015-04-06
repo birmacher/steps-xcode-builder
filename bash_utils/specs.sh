@@ -1,9 +1,6 @@
 #!/bin/bash
 
-function print_and_do_command {
-  echo "$ $@"
-  bash -c $@
-}
+function print_and_do_command { echo "$ $@"; "$@"; }
 
 #
 # This one expects a string as it's input, and will eval it
